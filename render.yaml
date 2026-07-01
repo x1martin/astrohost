@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: nehost-panel
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -k flask_socketio.worker main:app
+    disk:
+      name: storage-disk
+      mountPath: /data
+      sizeGB: 5
