@@ -505,7 +505,7 @@ def create_app():
                     os.killpg(os.getpgid(t_pid), signal.SIGKILL)
                 except: pass
             srv = db.execute('SELECT startup FROM servers WHERE folder=?', (folder,)).fetchone()
-            startup_file = srv['startup'] if srv and srv['startup'] else 'main.py'
+            startup_file = srv['startup'] if srv and srv['startup'] else 'app.py'
             f_log = open(log_file_path, 'a')
             f_log.write(f"\n[{now}] 🚀 Instance {act.upper()}ED Successfully\n")
             proc = subprocess.Popen(['python3', startup_file], cwd=path, stdout=f_log, stderr=f_log, preexec_fn=os.setsid)
@@ -602,7 +602,7 @@ def create_app():
             return jsonify({'status': 'error', 'msg': f"Limit Reached! Max: {user['server_limit']}"})
         name = request.json.get('name')
         folder = secure_filename(name).lower() + "_" + str(int(time.time()))
-        db.execute('INSERT INTO servers (user_id, name, folder, status, startup) VALUES (?,?,?,?,?)', (session['user_id'], name, folder, 'Offline', 'main.py'))
+        db.execute('INSERT INTO servers (user_id, name, folder, status, startup) VALUES (?,?,?,?,?)', (session['user_id'], name, folder, 'Offline', 'app.py'))
         db.commit()
         db.close()
         os.makedirs(os.path.join(app.config['BASE_STORAGE'], folder), exist_ok=True)
